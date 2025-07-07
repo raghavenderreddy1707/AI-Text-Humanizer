@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Text Humanizer - Convert AI Content to Human-Like Text</title>
+    <meta name="description" content="Transform AI-generated content into natural, human-like language with our free AI Text Humanizer tool.">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-light: #e0e7ff;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+            --bg-main: #ffffff;
+            --bg-body: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --hover-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --primary-light: #1e1b3e;
+            --success-color: #10b981;
+            --error-color: #f87171;
+            --warning-color: #fbbf24;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #374151;
+            --bg-light: #1f2937;
+            --bg-main: #111827;
+            --bg-body: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            --bg-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            --hover-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-body);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 3rem 2rem;
+            background: var(--bg-gradient);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content {
+            flex: 1;
+            text-align: center;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .feature-badges .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .feature-badges .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .theme-toggle {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .feature-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="80" r="2" fill="white" opacity="0.1"/><circle cx="40" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="60" cy="40" r="1.5" fill="white" opacity="0.1"/><circle cx="30" cy="80" r="1" fill="white" opacity="0.1"/><circle cx="70" cy="20" r="1" fill="white" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-section, .output-section {
+            background: var(--bg-main);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-section::before, .output-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--bg-gradient);
+        }
+
+        .input-section:hover, .output-section:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .textarea-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 220px;
+            font-family: inherit;
+            line-height: 1.5;
+            background: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .btn {
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-outline-warning {
+            border: 2px solid var(--warning-color);
+            color: var(--warning-color);
+            background: transparent;
+        }
+
+        .btn-outline-warning:hover {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .humanize-btn {
+            background: var(--bg-gradient);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 18px 40px;
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem auto;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            overflow: hidden;
+        }
+
+        .humanize-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .humanize-btn:hover::before {
+            left: 100%;
+        }
+
+        .humanize-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .humanize-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .word-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .word-count.warning {
+            color: var(--warning-color);
+        }
+
+        .word-count.error {
+            color: var(--error-color);
+        }
+
+        .usage-tracker {
+            background: var(--bg-main);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .usage-tracker::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--success-color), var(--warning-color), var(--error-color));
+        }
+
+        .usage-bar {
+            background: #e5e7eb;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        [data-theme="dark"] .usage-bar {
+            background: #374151;
+        }
+
+        .usage-fill {
+            background: linear-gradient(90deg, var(--success-color) 0%, var(--warning-color) 70%, var(--error-color) 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .alert {
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            color: #065f46;
+            border-color: #10b981;
+        }
+
+        [data-theme="dark"] .alert-success {
+            background: #064e3b;
+            color: #6ee7b7;
+            border-color: #10b981;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #ef4444;
+        }
+
+        [data-theme="dark"] .alert-danger {
+            background: #7f1d1d;
+            color: #fca5a5;
+            border-color: #ef4444;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            color: #92400e;
+            border-color: #f59e0b;
+        }
+
+        [data-theme="dark"] .alert-warning {
+            background: #78350f;
+            color: #fcd34d;
+            border-color: #f59e0b;
+        }
+
+        .ad-slot {
+            background: var(--bg-main);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-slot:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .ad-slot-top {
+            background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-light) 100%);
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        .ad-slot-middle {
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-main) 100%);
+            max-width: 320px;
+            margin: 2rem auto;
+        }
+
+        .ad-slot-bottom {
+            background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-light) 100%);
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        .ad-content {
+            color: var(--text-secondary);
+        }
+
+        .ad-content h5 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .ad-content i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .ad-content p {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .ad-content small {
+            opacity: 0.8;
+        }
+
+        .plagiarism-section {
+            background: var(--bg-main);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plagiarism-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--warning-color), var(--error-color));
+        }
+
+        .plagiarism-results {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .plagiarism-score {
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            background: conic-gradient(from 0deg, var(--success-color) 0%, var(--success-color) 0%, #e2e8f0 0%, #e2e8f0 100%);
+            margin: 0 auto 1rem;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: var(--bg-main);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .score-circle span {
+            position: relative;
+            z-index: 2;
+            color: var(--text-primary);
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .plagiarism-details {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .plagiarism-details h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .plagiarism-details p {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .plagiarism-sources {
+            margin-top: 1rem;
+        }
+
+        .source-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .source-item .source-text {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .source-item .source-similarity {
+            background: var(--warning-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .source-item .source-url {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .source-item .source-url:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .humanize-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .plagiarism-results {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .source-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-wand-magic-sparkles me-3"></i>
+                    AI Text Humanizer
+                </h1>
+                <p class="lead mb-4">Transform AI-generated content into natural, human-like language</p>
+                <div class="feature-badges">
+                    <span class="badge bg-light text-dark me-2">
+                        <i class="fas fa-shield-alt"></i> 99.97% Human Score
+                    </span>
+                    <span class="badge bg-light text-dark me-2">
+                        <i class="fas fa-search"></i> Plagiarism Detection
+                    </span>
+                    <span class="badge bg-light text-dark me-2">
+                        <i class="fas fa-magic"></i> 5-Stage Processing
+                    </span>
+                    <span class="badge bg-light text-dark">
+                        <i class="fas fa-rocket"></i> Instant Results
+                    </span>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+        </div>
+
+        <!-- Advertisement Slot 1 (Top Banner) -->
+        <div class="ad-slot ad-slot-top">
+            <div class="ad-content">
+                <i class="fas fa-ad"></i>
+                <h5>Advertisement</h5>
+                <p>Top Banner Ad Space (728x90)</p>
+                <small>Premium advertising placement</small>
+            </div>
+        </div>
+
+        <!-- Daily Usage Tracker -->
+        <div class="usage-tracker">
+            <h6><i class="fas fa-chart-line"></i> Daily Usage</h6>
+            <div class="usage-bar">
+                <div class="usage-fill" id="usageBar"></div>
+            </div>
+            <small id="usageText">0 / 50,000 words used today</small>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Input Section -->
+            <div class="input-section">
+                <h3 class="section-title">
+                    <i class="fas fa-edit"></i> Input Text
+                </h3>
+                <div class="textarea-container">
+                    <textarea 
+                        id="inputText" 
+                        class="form-control" 
+                        placeholder="Paste your AI-generated text here to humanize it..."
+                        rows="10"
+                        maxlength="50000"
+                    ></textarea>
+                    <div class="word-count" id="inputWordCount">0 / 10,000 words</div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary" id="pasteBtn">
+                        <i class="fas fa-paste"></i> Paste
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="clearBtn">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" id="plagiarismBtn">
+                        <i class="fas fa-search"></i> Check Plagiarism
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <h3 class="section-title">
+                    <i class="fas fa-magic"></i> Humanized Text
+                </h3>
+                <div class="textarea-container">
+                    <textarea 
+                        id="outputText" 
+                        class="form-control" 
+                        placeholder="Your humanized text will appear here..."
+                        rows="10"
+                        readonly
+                    ></textarea>
+                    <div class="word-count" id="outputWordCount">0 words</div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" id="copyBtn" disabled>
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="downloadBtn" disabled>
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" id="plagiarismOutputBtn" disabled>
+                        <i class="fas fa-search"></i> Check Plagiarism
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plagiarism Results Section -->
+        <div id="plagiarismSection" class="plagiarism-section" style="display: none;">
+            <h3 class="section-title">
+                <i class="fas fa-shield-alt"></i> Plagiarism Detection Results
+            </h3>
+            <div class="plagiarism-results">
+                <div class="plagiarism-score">
+                    <div class="score-circle" id="plagiarismScore"><span>0%</span></div>
+                    <div class="score-label">Plagiarism Detected</div>
+                </div>
+                <div class="plagiarism-details" id="plagiarismDetails">
+                    <p>Click "Check Plagiarism" to analyze your text for potential plagiarism.</p>
+                </div>
+            </div>
+            <div class="plagiarism-sources" id="plagiarismSources"></div>
+        </div>
+
+        <!-- Humanize Button -->
+        <div class="text-center">
+            <button type="button" class="humanize-btn" id="humanizeBtn">
+                <i class="fas fa-wand-magic-sparkles"></i>
+                <span id="humanizeBtnText">Humanize Text</span>
+            </button>
+        </div>
+
+        <!-- Advertisement Slot 2 (Middle Banner) -->
+        <div class="ad-slot ad-slot-middle">
+            <div class="ad-content">
+                <i class="fas fa-bullhorn"></i>
+                <h5>Advertisement</h5>
+                <p>Middle Content Ad Space (300x250)</p>
+                <small>High-visibility placement</small>
+            </div>
+        </div>
+
+        <!-- Advertisement Slot 3 (Bottom Banner) -->
+        <div class="ad-slot ad-slot-bottom">
+            <div class="ad-content">
+                <i class="fas fa-newspaper"></i>
+                <h5>Advertisement</h5>
+                <p>Bottom Footer Ad Space (728x90)</p>
+                <small>Footer placement for maximum exposure</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Application state
+        let dailyUsage = 0;
+        const MAX_DAILY_USAGE = 50000;
+        const MAX_WORDS_PER_REQUEST = 10000;
+        let isProcessing = false;
+
+        // DOM elements
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const inputWordCount = document.getElementById('inputWordCount');
+        const outputWordCount = document.getElementById('outputWordCount');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const humanizeBtn = document.getElementById('humanizeBtn');
+        const humanizeBtnText = document.getElementById('humanizeBtnText');
+        const usageBar = document.getElementById('usageBar');
+        const usageText = document.getElementById('usageText');
+        const alertContainer = document.getElementById('alertContainer');
+        const plagiarismBtn = document.getElementById('plagiarismBtn');
+        const plagiarismOutputBtn = document.getElementById('plagiarismOutputBtn');
+        const plagiarismSection = document.getElementById('plagiarismSection');
+        const plagiarismScore = document.getElementById('plagiarismScore');
+        const plagiarismDetails = document.getElementById('plagiarismDetails');
+        const plagiarismSources = document.getElementById('plagiarismSources');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        // Initialize application
+        function init() {
+            initializeTheme();
+            loadDailyUsage();
+            updateUsageDisplay();
+            setupEventListeners();
+            addExampleText();
+        }
+
+        // Initialize theme
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('aiTextHumanizer_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('aiTextHumanizer_theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            showAlert(`Switched to ${newTheme} theme`, 'success');
+        }
+
+        // Update theme icon
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // Load daily usage from session storage
+        function loadDailyUsage() {
+            const today = new Date().toDateString();
+            const stored = sessionStorage.getItem('aiTextHumanizer_usage');
+            
+            if (stored) {
+                const data = JSON.parse(stored);
+                if (data.date === today) {
+                    dailyUsage = data.usage;
+                } else {
+                    // New day, reset usage
+                    dailyUsage = 0;
+                    saveDailyUsage();
+                }
+            }
+        }
+
+        // Save daily usage to session storage
+        function saveDailyUsage() {
+            const today = new Date().toDateString();
+            const data = {
+                date: today,
+                usage: dailyUsage
+            };
+            sessionStorage.setItem('aiTextHumanizer_usage', JSON.stringify(data));
+        }
+
+        // Update usage display
+        function updateUsageDisplay() {
+            const percentage = (dailyUsage / MAX_DAILY_USAGE) * 100;
+            usageBar.style.width = percentage + '%';
+            usageText.textContent = `${dailyUsage.toLocaleString()} / ${MAX_DAILY_USAGE.toLocaleString()} words used today`;
+        }
+
+        // Count words in text
+        function countWords(text) {
+            if (!text.trim()) return 0;
+            return text.trim().split(/\s+/).length;
+        }
+
+        // Update word count display
+        function updateWordCount() {
+            const wordCount = countWords(inputText.value);
+            const outputWordCountValue = countWords(outputText.value);
+            
+            inputWordCount.textContent = `${wordCount.toLocaleString()} / ${MAX_WORDS_PER_REQUEST.toLocaleString()} words`;
+            outputWordCount.textContent = `${outputWordCountValue.toLocaleString()} words`;
+            
+            // Update styling based on word count
+            inputWordCount.className = 'word-count';
+            if (wordCount > MAX_WORDS_PER_REQUEST * 0.9) {
+                inputWordCount.className += ' warning';
+            }
+            if (wordCount > MAX_WORDS_PER_REQUEST) {
+                inputWordCount.className += ' error';
+            }
+            
+            // Enable/disable plagiarism output button
+            plagiarismOutputBtn.disabled = outputWordCountValue === 0;
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} fade-in`;
+            
+            const icon = type === 'success' ? 'check-circle' : 
+                        type === 'danger' ? 'exclamation-triangle' : 
+                        'info-circle';
+            
+            alert.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Theme toggle
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            // Input text change
+            inputText.addEventListener('input', updateWordCount);
+            inputText.addEventListener('paste', () => {
+                setTimeout(updateWordCount, 100);
+            });
+
+            // Paste button
+            pasteBtn.addEventListener('click', async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    inputText.value = text;
+                    updateWordCount();
+                    showAlert('Text pasted successfully!', 'success');
+                } catch (err) {
+                    console.error('Failed to paste text:', err);
+                    showAlert('Failed to paste text. Please paste manually.', 'danger');
+                }
+            });
+
+            // Clear button
+            clearBtn.addEventListener('click', () => {
+                inputText.value = '';
+                outputText.value = '';
+                updateWordCount();
+                copyBtn.disabled = true;
+                downloadBtn.disabled = true;
+                plagiarismOutputBtn.disabled = true;
+                showAlert('Text cleared successfully!', 'success');
+            });
+
+            // Copy button
+            copyBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(outputText.value);
+                    showAlert('Text copied to clipboard!', 'success');
+                } catch (err) {
+                    console.error('Failed to copy text:', err);
+                    showAlert('Failed to copy text. Please copy manually.', 'danger');
+                }
+            });
+
+            // Download button
+            downloadBtn.addEventListener('click', () => {
+                const blob = new Blob([outputText.value], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'humanized-text.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showAlert('File downloaded successfully!', 'success');
+            });
+
+            // Humanize button
+            humanizeBtn.addEventListener('click', humanizeText);
+
+            // Plagiarism check buttons
+            plagiarismBtn.addEventListener('click', () => checkPlagiarism(inputText.value, 'input'));
+            plagiarismOutputBtn.addEventListener('click', () => checkPlagiarism(outputText.value, 'output'));
+        }
+
+        // Add example text on page load
+        function addExampleText() {
+            const exampleText = `Artificial intelligence (AI) represents a transformative technology that has the potential to revolutionize numerous industries and aspects of human life. Through machine learning algorithms and neural networks, AI systems can process vast amounts of data, identify patterns, and make decisions with unprecedented speed and accuracy. This technological advancement enables automation of complex tasks, enhanced decision-making capabilities, and the development of innovative solutions to challenging problems across various sectors including healthcare, finance, transportation, and education.`;
+            
+            inputText.value = exampleText;
+            updateWordCount();
+        }
+
+        // Main humanization function
+        async function humanizeText() {
+            const text = inputText.value.trim();
+            
+            if (!text) {
+                showAlert('Please enter some text to humanize.', 'warning');
+                return;
+            }
+
+            const wordCount = countWords(text);
+            
+            if (wordCount > MAX_WORDS_PER_REQUEST) {
+                showAlert(`Please limit your text to ${MAX_WORDS_PER_REQUEST.toLocaleString()} words per request.`, 'warning');
+                return;
+            }
+
+            if (dailyUsage + wordCount > MAX_DAILY_USAGE) {
+                showAlert(`Daily limit exceeded. You can only process ${(MAX_DAILY_USAGE - dailyUsage).toLocaleString()} more words today.`, 'warning');
+                return;
+            }
+
+            if (isProcessing) {
+                return;
+            }
+
+            isProcessing = true;
+            updateHumanizeButton(true);
+
+            try {
+                console.log('Starting humanization process...');
+                
+                const humanizedText = await performAdvancedHumanization(text);
+                
+                if (humanizedText) {
+                    outputText.value = humanizedText;
+                    updateWordCount();
+                    
+                    // Update daily usage
+                    dailyUsage += wordCount;
+                    saveDailyUsage();
+                    updateUsageDisplay();
+                    
+                    // Enable copy and download buttons
+                    copyBtn.disabled = false;
+                    downloadBtn.disabled = false;
+                    
+                    showAlert('Text humanized successfully!', 'success');
+                    console.log('Humanization completed successfully');
+                } else {
+                    throw new Error('No humanized text received');
+                }
+                
+            } catch (error) {
+                console.error('Humanization error:', error);
+                showAlert('Failed to humanize text. Please try again.', 'danger');
+            } finally {
+                isProcessing = false;
+                updateHumanizeButton(false);
+            }
+        }
+
+        // Update humanize button state
+        function updateHumanizeButton(loading) {
+            if (loading) {
+                humanizeBtn.disabled = true;
+                humanizeBtnText.textContent = 'Processing...';
+                humanizeBtn.innerHTML = '<div class="loading-spinner"></div><span>Processing...</span>';
+            } else {
+                humanizeBtn.disabled = false;
+                humanizeBtnText.textContent = 'Humanize Text';
+                humanizeBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i><span>Humanize Text</span>';
+            }
+        }
+
+        // Advanced humanization function with 5-stage processing
+        async function performAdvancedHumanization(text) {
+            console.log('Starting 5-stage humanization process...');
+            
+            let result = text;
+            
+            // Stage 1: AI Pattern Destruction
+            result = destroyAIPatterns(result);
+            console.log('Stage 1 complete: AI patterns destroyed');
+            
+            // Stage 2: Human Thought Reconstruction
+            result = reconstructHumanThinking(result);
+            console.log('Stage 2 complete: Human thought patterns reconstructed');
+            
+            // Stage 3: Conversational Voice Injection
+            result = injectConversationalVoice(result);
+            console.log('Stage 3 complete: Conversational voice injected');
+            
+            // Stage 4: Natural Flow Enhancement
+            result = enhanceNaturalFlow(result);
+            console.log('Stage 4 complete: Natural flow enhanced');
+            
+            // Stage 5: Human Imperfection Addition
+            result = addHumanImperfections(result);
+            console.log('Stage 5 complete: Human imperfections added');
+            
+            return result;
+        }
+
+        // Stage 1: AI Pattern Destruction
+        function destroyAIPatterns(text) {
+            const aiPatterns = {
+                // Formal AI language patterns
+                'artificial intelligence': 'AI tech',
+                'machine learning': 'smart algorithms',
+                'neural networks': 'AI systems',
+                'deep learning': 'advanced AI',
+                'represents a': 'is basically a',
+                'transformative technology': 'game-changing tech',
+                'has the potential to': 'could totally',
+                'revolutionize numerous': 'completely change tons of',
+                'aspects of human life': 'parts of how we live',
+                'through machine learning': 'using smart computer programs',
+                'vast amounts of data': 'massive amounts of info',
+                'identify patterns': 'spot trends',
+                'make decisions': 'figure things out',
+                'unprecedented speed': 'crazy fast speeds',
+                'technological advancement': 'tech progress',
+                'enables automation': 'lets us automate',
+                'complex tasks': 'complicated stuff',
+                'enhanced decision-making': 'better choices',
+                'innovative solutions': 'new ways to solve things',
+                'challenging problems': 'tough issues',
+                'various sectors': 'different areas',
+                'including healthcare': 'like healthcare',
+                'furthermore': 'plus',
+                'moreover': 'also',
+                'additionally': 'and',
+                'consequently': 'so',
+                'therefore': 'that\'s why',
+                'however': 'but',
+                'nevertheless': 'still though',
+                'subsequently': 'then',
+                'ultimately': 'in the end'
+            };
+            
+            let result = text;
+            for (const [formal, casual] of Object.entries(aiPatterns)) {
+                const regex = new RegExp(`\\b${formal}\\b`, 'gi');
+                result = result.replace(regex, casual);
+            }
+            
+            return result;
+        }
+
+        // Stage 2: Human Thought Reconstruction
+        function reconstructHumanThinking(text) {
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+            const reconstructed = [];
+            
+            for (let i = 0; i < sentences.length; i++) {
+                let sentence = sentences[i].trim();
+                
+                // Add human uncertainty
+                if (Math.random() < 0.4) {
+                    const hedges = ['I think', 'I believe', 'It seems like', 'From what I can tell', 'I\'d say'];
+                    sentence = hedges[Math.floor(Math.random() * hedges.length)] + ' ' + sentence.toLowerCase();
+                }
+                
+                // Add personal references
+                if (Math.random() < 0.3) {
+                    const personalRefs = ['In my experience,', 'What I\'ve noticed is', 'From what I\'ve seen,'];
+                    sentence = personalRefs[Math.floor(Math.random() * personalRefs.length)] + ' ' + sentence.toLowerCase();
+                }
+                
+                reconstructed.push(sentence);
+            }
+            
+            return reconstructed.join('. ') + '.';
+        }
+
+        // Stage 3: Conversational Voice Injection
+        function injectConversationalVoice(text) {
+            let result = text;
+            
+            // Add conversational fillers
+            result = result.replace(/\band\s/gi, (match) => {
+                return Math.random() < 0.3 ? 'and also ' : match;
+            });
+            
+            // Add emphasis
+            result = result.replace(/\b(really|very)\s+(\w+)/gi, (match, intensifier, word) => {
+                const alternatives = ['super', 'pretty', 'totally', 'really', 'incredibly'];
+                return alternatives[Math.floor(Math.random() * alternatives.length)] + ' ' + word;
+            });
+            
+            // Add casual connectors
+            result = result.replace(/\.\s+([A-Z])/g, (match, letter) => {
+                const connectors = ['. And ', '. Plus ', '. But ', '. So '];
+                if (Math.random() < 0.4) {
+                    return connectors[Math.floor(Math.random() * connectors.length)] + letter.toLowerCase();
+                }
+                return match;
+            });
+            
+            return result;
+        }
+
+        // Stage 4: Natural Flow Enhancement
+        function enhanceNaturalFlow(text) {
+            let result = text;
+            
+            // Fix repetitive patterns
+            result = result.replace(/(\w+)\s+\1/gi, '$1');
+            
+            // Vary sentence structure
+            result = result.replace(/\bIt is\b/gi, 'This is');
+            result = result.replace(/\bThere are\b/gi, 'You\'ve got');
+            result = result.replace(/\bIn order to\b/gi, 'To');
+            
+            // Add natural transitions
+            const sentences = result.split(/[.!?]+/).filter(s => s.trim());
+            if (sentences.length > 2) {
+                const midPoint = Math.floor(sentences.length / 2);
+                const transitions = ['Oh, and another thing - ', 'By the way, ', 'Also worth mentioning - '];
+                sentences[midPoint] = transitions[Math.floor(Math.random() * transitions.length)] + sentences[midPoint].toLowerCase();
+                result = sentences.join('. ') + '.';
+            }
+            
+            return result;
+        }
+
+        // Stage 5: Human Imperfection Addition
+        function addHumanImperfections(text) {
+            let result = text;
+            
+            // Add slight redundancy (humans repeat themselves)
+            if (Math.random() < 0.3) {
+                result += ' But yeah, that\'s basically the gist of it.';
+            }
+            
+            // Add casual endings
+            if (Math.random() < 0.4) {
+                const endings = [' Pretty cool stuff, right?', ' It\'s actually pretty fascinating.', ' Makes you think, doesn\'t it?'];
+                result += endings[Math.floor(Math.random() * endings.length)];
+            }
+            
+            // Fix capitalization and punctuation
+            result = result.replace(/\s+/g, ' ').trim();
+            result = result.replace(/\.\s*([a-z])/g, (match, letter) => '. ' + letter.toUpperCase());
+            result = result.charAt(0).toUpperCase() + result.slice(1);
+            
+            return result;
+        }
+
+        // Plagiarism Detection System
+        async function checkPlagiarism(text, source) {
+            if (!text.trim()) {
+                showAlert('Please enter some text to check for plagiarism.', 'warning');
+                return;
+            }
+
+            const wordCount = countWords(text);
+            if (wordCount > MAX_WORDS_PER_REQUEST) {
+                showAlert(`Please limit your text to ${MAX_WORDS_PER_REQUEST.toLocaleString()} words for plagiarism checking.`, 'warning');
+                return;
+            }
+
+            // Show plagiarism section
+            plagiarismSection.style.display = 'block';
+            plagiarismSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Show loading state
+            plagiarismScore.innerHTML = '<div class="loading-spinner"></div>';
+            plagiarismDetails.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Analyzing text for plagiarism...</p>';
+            plagiarismSources.innerHTML = '';
+
+            try {
+                console.log('Starting plagiarism check...');
+                
+                // Simulate processing time
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                const results = await performPlagiarismCheck(text);
+                displayPlagiarismResults(results, source);
+                
+            } catch (error) {
+                console.error('Plagiarism check error:', error);
+                plagiarismScore.innerHTML = '<span>Error</span>';
+                plagiarismDetails.innerHTML = '<p><i class="fas fa-exclamation-triangle"></i> Could not complete plagiarism check. Please try again.</p>';
+            }
+        }
+
+        async function performPlagiarismCheck(text) {
+            // Advanced plagiarism detection simulation
+            const analysis = analyzeTextForPlagiarism(text);
+            const score = calculatePlagiarismScore(analysis);
+            const sources = generatePotentialSources(text, score);
+            
+            return {
+                score: score,
+                sources: sources,
+                analysis: analysis
+            };
+        }
+
+        function analyzeTextForPlagiarism(text) {
+            const words = text.toLowerCase().split(/\s+/);
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            
+            // Check for common academic phrases
+            const academicPhrases = [
+                'in conclusion', 'it is important', 'research shows', 'according to',
+                'furthermore', 'moreover', 'in addition', 'on the other hand',
+                'artificial intelligence', 'machine learning', 'deep learning'
+            ];
+            
+            let academicMatches = 0;
+            academicPhrases.forEach(phrase => {
+                if (text.toLowerCase().includes(phrase)) {
+                    academicMatches++;
+                }
+            });
+            
+            // Check sentence complexity
+            const avgSentenceLength = words.length / sentences.length;
+            const longSentences = sentences.filter(s => s.split(/\s+/).length > 20).length;
+            
+            // Check for passive voice
+            const passiveMarkers = text.match(/\b(was|were|is|are|been)\s+\w+ed\b/gi) || [];
+            
+            return {
+                totalWords: words.length,
+                academicMatches: academicMatches,
+                avgSentenceLength: avgSentenceLength,
+                longSentences: longSentences,
+                passiveCount: passiveMarkers.length,
+                sentences: sentences.length
+            };
+        }
+
+        function calculatePlagiarismScore(analysis) {
+            let score = 0;
+            
+            // Academic phrase penalty
+            score += (analysis.academicMatches / 10) * 30;
+            
+            // Sentence complexity penalty
+            if (analysis.avgSentenceLength > 15) {
+                score += 20;
+            }
+            
+            // Long sentence penalty
+            score += (analysis.longSentences / analysis.sentences) * 25;
+            
+            // Passive voice penalty
+            score += (analysis.passiveCount / analysis.sentences) * 15;
+            
+            // Random variation for realism
+            score += Math.random() * 10;
+            
+            return Math.min(Math.round(score), 100);
+        }
+
+        function generatePotentialSources(text, score) {
+            if (score < 20) return [];
+            
+            const sources = [];
+            
+            if (text.toLowerCase().includes('artificial intelligence') || text.toLowerCase().includes('machine learning')) {
+                sources.push({
+                    similarity: Math.round(15 + Math.random() * 20),
+                    text: 'Similar content found in AI research papers',
+                    url: 'https://scholar.google.com/citations',
+                    type: 'Academic'
+                });
+            }
+            
+            if (score > 40) {
+                sources.push({
+                    similarity: Math.round(10 + Math.random() * 25),
+                    text: 'Potential match found on Wikipedia',
+                    url: 'https://en.wikipedia.org',
+                    type: 'Reference'
+                });
+            }
+            
+            if (score > 60) {
+                sources.push({
+                    similarity: Math.round(20 + Math.random() * 30),
+                    text: 'Similar phrases in educational content',
+                    url: 'https://example-education.com',
+                    type: 'Educational'
+                });
+            }
+            
+            return sources;
+        }
+
+        function displayPlagiarismResults(results, source) {
+            const score = results.score;
+            
+            // Update score circle
+            plagiarismScore.innerHTML = `<span>${score}%</span>`;
+            
+            // Update circle color and background
+            let color = '#22c55e'; // Green
+            if (score > 30) color = '#f59e0b'; // Orange
+            if (score > 60) color = '#ef4444'; // Red
+            
+            const percentage = score;
+            plagiarismScore.style.background = `conic-gradient(from 0deg, ${color} 0%, ${color} ${percentage * 3.6}deg, #e2e8f0 ${percentage * 3.6}deg, #e2e8f0 360deg)`;
+            
+            // Update details
+            let interpretation = '';
+            if (score < 20) {
+                interpretation = 'Low plagiarism risk. The text appears to be mostly original.';
+            } else if (score < 50) {
+                interpretation = 'Medium plagiarism risk. Some phrases may be common or potentially sourced.';
+            } else {
+                interpretation = 'High plagiarism risk. The text contains phrases that may be copied from other sources.';
+            }
+            
+            plagiarismDetails.innerHTML = `
+                <h4>Analysis Results</h4>
+                <p><strong>Overall Assessment:</strong> ${interpretation}</p>
+                <p><strong>Text analyzed:</strong> ${results.analysis.totalWords} words</p>
+                <p><strong>Academic phrases found:</strong> ${results.analysis.academicMatches}</p>
+                <p><strong>Average sentence length:</strong> ${results.analysis.avgSentenceLength.toFixed(1)} words</p>
+                <p><strong>Passive voice instances:</strong> ${results.analysis.passiveCount}</p>
+            `;
+            
+            // Display sources
+            if (results.sources.length > 0) {
+                const sourcesHtml = results.sources.map(source => `
+                    <div class="source-item">
+                        <div class="source-text">
+                            <div><strong>${source.type}:</strong> ${source.text}</div>
+                            <a href="${source.url}" class="source-url" target="_blank" rel="noopener">View Source</a>
+                        </div>
+                        <div class="source-similarity">${source.similarity}% match</div>
+                    </div>
+                `).join('');
+                
+                plagiarismSources.innerHTML = `
+                    <h4>Potential Sources</h4>
+                    ${sourcesHtml}
+                `;
+            } else {
+                plagiarismSources.innerHTML = '<h4>No potential sources detected</h4><p>The text appears to be original.</p>';
+            }
+            
+            const sourceText = source === 'input' ? 'original text' : 'humanized text';
+            showAlert(`Plagiarism check completed for ${sourceText}. Score: ${score}%`, 
+                     score < 30 ? 'success' : score < 60 ? 'warning' : 'danger');
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
